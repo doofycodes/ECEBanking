@@ -2,7 +2,7 @@
 THis is a mini banking system created by an ecosystem of G's.
 
  /* GIT COMMANDS
-    git init = initialize project to use git
+    git init = initialize project to use git\n
     git add . = add all changes to be saved
     git add *filename* = add single file to be saved 
     git commit -m "message" = save changes with message
@@ -16,4 +16,4 @@ THis is a mini banking system created by an ecosystem of G's.
     */
 
 Things we need to do:
-Make suystem for deposits
+Make system for deposits
