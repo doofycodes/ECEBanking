@@ -1,3 +1,4 @@
 # ECEBanking
 THis is a mini banking system created by an ecosystem of G's.
 Things we need to do:
+Make suystem for deposits
