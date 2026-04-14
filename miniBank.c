@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 
     /*
     printf("address of balance: %p\n", &balance);
@@ -11,27 +12,35 @@
     printf("value at stored address: %lf \n", *pBalance);//dereferencing
     */
 
-void menu(double *pBalance);
-void depo(double *pBalance);
-void with(double *pBalance);
+void menu(double *pBalance, FILE *pF);
+void depo(double *pBalance, FILE *pF);
+void with(double *pBalance, FILE *pF);
 void printBalance(double *pBalance);
 
 
-int main(){
+int main()
+{
 
     double balance =0.0;
     double *pBalance = &balance;
 
+    FILE *pF;
+    pF = fopen("Statement.txt","w");
+    fprintf(pF, "-----Welcome to your statement-----\n\n");
+
     printf("\n\nHello welcome to Gbank\n");
-    menu(pBalance);//passing the POINTER to menu function 
+    menu(pBalance,pF);//passing the POINTER to menu function 
     // when passing a pointer, you wont include the * because you are passing the actual address. When you receive a pointer, you must specify with a 
     //* because you are saying that you are passing a POINTER
     // you can use/change the actual value of the pointer by DEREFERENCING by putting a * before the name
+   
+    fclose(pF);
     return 0;
 }
 
 //this function will determine what the user wants to do and then call the next appropriate function 
-void menu(double *pBalance){
+void menu(double *pBalance, FILE *pF)
+{
 
     int choice;
 
@@ -51,11 +60,11 @@ void menu(double *pBalance){
     switch(choice){
 
         case 1:
-        depo(pBalance);
+        depo(pBalance,pF);
         break;
 
         case 2:
-        with(pBalance);
+        with(pBalance,pF);
         break;
 
         case 3:
@@ -73,7 +82,8 @@ void menu(double *pBalance){
     }
 }
 
-void depo(double *pBalance){
+void depo(double *pBalance, FILE *pF)
+{
     //declare variable and store deposit amount
     double amount;
     printf("Enter deposit amount: ");
@@ -87,10 +97,16 @@ void depo(double *pBalance){
 
     //add deposit amount to balance
     *pBalance += amount;//dereference
+
+    //send the deposit and new balance to history file
+    fprintf(pF, "Deposited %.2lf\n", amount);
+    fprintf(pF, "   Balance: %.2lf\n", *pBalance);
+    //print success message and new balance to terminal
     printf("\nDeposit succesful\nNew balance: %.2lf\n\n",*pBalance);
 }
  
-void with(double *pBalance){
+void with(double *pBalance, FILE *pF)
+{
 
     //declare variable and store withdrawal amount
     double amount;
@@ -98,20 +114,28 @@ void with(double *pBalance){
     scanf("%lf", &amount);
 
     //make sure withdrawal is less than balance
-    if(amount > *pBalance){ 
+    while(amount > *pBalance){ 
         printf("\ninsufficient funds. \nEnter a new withdraw amount: ");
         scanf("%lf", &amount);
     }
-    
+
+    //this will check if the withdraw amount is divisible by 20. fmod(numerator,denominator)
+    while(fmod(amount, 20.0) !=0){
+        printf("\nYou can only withdraw in multiples of 20. \nEnter a new withdraw amount: ");
+        scanf("%lf", &amount);
+    }
     //withdraw money from balance
     *pBalance -= amount;
 
-    printf("\nWithdrawal successful\nNew balance %.2lf", *pBalance);
+    //send the deposit and new balance to history file
+    fprintf(pF, "Withdrew %.2lf\n", amount);
+    fprintf(pF, "   Balance: %.2lf\n", *pBalance);
+    //print success message and new balance to terminal
+    printf("\nWithdrawal successful\nNew balance %.2lf \n\n", *pBalance);
 
 }
 void printBalance(double *pBalance)
 {
 
     printf("your balance is: $%.2lf \n",*pBalance); //dereference
-
 }
