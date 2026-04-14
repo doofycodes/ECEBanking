@@ -1,28 +1,42 @@
 #include <stdio.h>
 #include <math.h>
 
-    /*
-    printf("address of balance: %p\n", &balance);
-    printf("value of pBalance:%p \n", pBalance);
+struct account // this creates the structure of an account :)
+{
+    int id;
+    int pin;
+    double balance;
+};
 
-    printf("size of balance: %lu bytes\n", sizeof(balance));
-    printf("size of pBalance: %lu bytes\n", sizeof(pBalance));
-    
-    printf("value of balance: %lf \n", balance);
-    printf("value at stored address: %lf \n", *pBalance);//dereferencing
-    */
-
+//prototypes for functions
 void menu(double *pBalance, FILE *pF);
 void depo(double *pBalance, FILE *pF);
 void with(double *pBalance, FILE *pF);
 void printBalance(double *pBalance);
-
+int auth(struct account bankUsers[], int totalUsers);
 
 int main()
 {
+    //this creates 3 accounts that each have an ID, PIN, Balance.. all in that order
+    struct account bankUsers[3] ={
+        {101, 1234, 100.00},
+        {102, 4321, 200.00},
+        {103, 1111, 300.00}
+    };
 
-    double balance =0.0;
-    double *pBalance = &balance;
+    int totalUsers = 3;
+   
+    //this will tell you what user logged in through the auth() function
+    int userIdx = auth(bankUsers, totalUsers);
+
+    // this is a safegaurd to end program if user fails to log in
+    if(userIdx == -1)
+    {
+        printf("too many failed attempts goodbye!\n");
+        return 0;
+    }
+
+    double *pBalance = &bankUsers[userIdx].balance;
 
     FILE *pF;
     pF = fopen("Statement.txt","w");
@@ -136,6 +150,40 @@ void with(double *pBalance, FILE *pF)
 }
 void printBalance(double *pBalance)
 {
-
     printf("your balance is: $%.2lf \n",*pBalance); //dereference
+}
+
+//this function will try to match the account number the user enters to one in the array
+//after finding an account, we ask the user for a pin and see if it matches that specific accounts pin :)
+int auth(struct account bankUsers[], int totalUsers)
+{
+    int tempID, tempPIN, attempts =0;
+
+    printf("hello what is your account number\n");
+    scanf("%d", &tempID);
+
+    for(int i=0;  i < totalUsers; i++)
+    {
+        if(tempID == bankUsers[i].id)
+        {
+            printf("Account found!\nPlease enter PIN:");
+            scanf("%d", &tempPIN);
+
+            while(attempts < 3)
+            {
+                attempts +=1;
+                if(tempPIN == bankUsers[i].pin)
+                {
+                    return i;
+                }
+
+                printf("incorrect PIN, please try again \n");
+                scanf("%d", &tempPIN);
+                
+
+            }
+        }    
+    }
+    return -1;
+    
 }
