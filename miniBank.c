@@ -30,10 +30,10 @@ int main()
     //this will tell you what user logged in through the auth() function
     int userIdx = auth(bankUsers, totalUsers);
 
-    // this is a safegaurd to end program if user fails to log in
+    // this is a safeguard to end program if user fails to log in
     if(userIdx == -1)
     {
-        printf("too many failed attempts goodbye!\n");
+        printf("Too many failed attempts goodbye!\n");
         return 0;
     }
 
@@ -166,11 +166,13 @@ int auth(struct account bankUsers[], int totalUsers)
 
     printf("hello what is your account number\n");
     scanf("%d", &tempID);
-
+    
+    int found = 0;
     for(int i=0;  i < totalUsers; i++)
     {
         if(tempID == bankUsers[i].id)
         {
+            found = 1;
             printf("Account found!\nPlease enter PIN:");
             scanf("%d", &tempPIN);
 
@@ -181,16 +183,17 @@ int auth(struct account bankUsers[], int totalUsers)
                 {
                     return i;
                 }
-                printf("incorrect PIN, please try again \n");
+                printf("Incorrect PIN, please try again \n");
                 scanf("%d", &tempPIN);
             }
+            return -1;
         }    
     }
-    return -1;
+    return found ? -1 : -2;
 }
 void transfer(struct account bankUsers[], int totalUsers, int userIdx,FILE *pF){
     // ask where the money is going
-    //take money from current users account 
+    //take money from current user's account 
     // delete from current account and give to new account
 
     int tempAccount;
